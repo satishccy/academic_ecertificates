@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "academic_ecertificates_backend": {
+      "main": "src/academic_ecertificates_backend/main.mo",
+      "type": "motoko"
+    },
+    "academic_ecertificates_frontend": {
+      "dependencies": [
+        "academic_ecertificates_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/academic_ecertificates_frontend/src/index.html"
+      },
+      "source": [
+        "src/academic_ecertificates_frontend/assets",
+        "dist/academic_ecertificates_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
