@@ -4,6 +4,10 @@
       "main": "src/academic_ecertificates_backend/main.mo",
       "type": "motoko"
     },
+    "internet_identity" : {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+    },
     "academic_ecertificates_frontend": {
       "dependencies": [
         "academic_ecertificates_backend"
@@ -21,7 +25,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": ""
+      "packtool": "mops sources"
     }
   },
   "output_env_file": ".env",
