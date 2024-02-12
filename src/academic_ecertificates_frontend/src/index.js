@@ -358,20 +358,24 @@ const init = async () => {
   if (url.searchParams.has('cert')) {
     var uuid = decodeURIComponent(url.searchParams.get('cert'));
     $('#cert_id').val(uuid);
-    var resp = await academic_ecertificates_actor.getCertificate(uuid);
-    console.log(resp);
-    if (resp.statusCode == BigInt(200)) {
-      var baseurl = process.env.DFX_NETWORK === "ic"
-        ? `https://${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}.icp0.io/?cert=`
-        : `http://127.0.0.1:4943/?canisterId=${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}&cert=`;
-      var universityUrl = process.env.DFX_NETWORK === "ic"
-        ? `https://${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}.icp0.io/university.html?principal=`
-        : `http://127.0.0.1:4943/university.html?canisterId=${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}&principal=`;
-      var cert = render_certificate(baseurl, universityUrl, resp.cert[0].name, resp.cert[0].regd_no, resp.cert[0].branch, resp.cert[0].grad_date, resp.cert[0].id);
-      $("#cert_container").html(cert);
-      createtoast(resp.msg);
-    } else {
-      createtoast(resp.msg);
+    try {
+      var resp = await academic_ecertificates_actor.getCertificate(uuid);
+      console.log(resp);
+      if (resp.statusCode == BigInt(200)) {
+        var baseurl = process.env.DFX_NETWORK === "ic"
+          ? `https://${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}.icp0.io/?cert=`
+          : `http://127.0.0.1:4943/?canisterId=${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}&cert=`;
+        var universityUrl = process.env.DFX_NETWORK === "ic"
+          ? `https://${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}.icp0.io/university.html?principal=`
+          : `http://127.0.0.1:4943/university.html?canisterId=${process.env.ACADEMIC_ECERTIFICATES_FRONTEND_CANISTER_ID}&principal=`;
+        var cert = render_certificate(baseurl, universityUrl, resp.cert[0].name, resp.cert[0].regd_no, resp.cert[0].branch, resp.cert[0].grad_date, resp.cert[0].id);
+        $("#cert_container").html(cert);
+        createtoast(resp.msg);
+      } else {
+        createtoast(resp.msg);
+      }
+    } catch (error) {
+      createtoast("Invalid ID Provided");
     }
   }
 

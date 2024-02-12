@@ -161,7 +161,16 @@ actor {
           };
         };
         case (?p) {
-          principal := Principal.fromText(p);
+          try {
+            principal := Principal.fromText(p);
+          } catch (e) {
+            return {
+              statusCode = 400;
+              cert = null;
+              university = null;
+              msg = "Invalid Id Provided";
+            };
+          };
         };
       };
       var n = words.next();
