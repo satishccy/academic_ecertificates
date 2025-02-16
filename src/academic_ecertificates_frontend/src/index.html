@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://icp0.io https://*.icp0.io https://icp-api.io http://localhost:4943;">
     <title>E Certificate Verification Using Block Chain</title>
     <script src="bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
@@ -166,105 +167,6 @@
     <div id="cert_container" class="container text-center">
     </div>
     <div id="contoast" data-count="0" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
-
-    <script>
-        $('#verify_btn').on("click", function (e) {
-            e.preventDefault();
-            var form = document.getElementById('cert_form');
-            if (form.checkValidity()) {
-                var id = $('#cert_id').val();
-                $.ajax({
-                    type: "post",
-                    url: "http://127.0.0.1:5000/get_certificate",
-                    data: { "txn_id": id },
-                    success: function (data) {
-                        var data = JSON.parse(data);
-                        if (data.status == false) {
-                            $('#cert_container').html('');
-                            alert(data.err);
-                        }
-                        else if (data.status == true) {
-                            data = data.data;
-                            rendered_data = render_certificate(data.name, data.rollno, data.branch, data.year, id);
-                            $('#cert_container').html(rendered_data);
-                        }
-                    },
-                    error: function (requestObject, error, errorThrown) {
-                        alert("Unable to Connect To Server.!!\nTurn on The Server");
-                    }
-                });
-            }
-            else {
-                form.reportValidity();
-            }
-        });
-
-        $(document).on('click', '#btn-login', function (e) {
-            var form = document.querySelector("#login_from");
-            console.log(form);
-            if (!form.checkValidity()) {
-                $("#btn-login-sub").click();
-            }
-            else {
-                $.ajax({
-                    data: { 'mnemonic': $('#mnemonic').val() },
-                    type: "post",
-                    url: "http://127.0.0.1:5000/login",
-                    success: function (dataResult) {
-                        var dataResult = JSON.parse(dataResult);
-                        if (dataResult.status == true) {
-                            window.location.href = "http://127.0.0.1:5000/uc";
-                        }
-                        else if (dataResult.status == false) {
-                            var alert = render_danger_alert(dataResult.err);
-                            $('#alert-container').html(alert + $('#alert-container').html());
-                        }
-                    },
-                    error: function (requestObject, error, errorThrown) {
-                        alert("Unable to Connect To Server.!!\nTurn on The Server");
-                    }
-                });
-            }
-        });
-
-        $(document).ready(function (e) {
-            var urll = window.location.href;
-            if (urll.includes('?cert=')) {
-                var arr = urll.split('?cert=');
-                var id = arr[1];
-                $('#cert_id').val(id);
-                $('#verify_btn').click();
-            }
-        });
-
-        function render_certificate(name, rollno, branch, year, cert_id) {
-            return `<div class="outer-border">
-    <div class="inner-dotted-border">
-           <span class="certification">Certificate of Graduation</span>
-           <br><br>
-           <span class="certify"><i>This is to certify that</i></span>
-           <br><br>
-           <span class="name"><b>`+ name + `</b></span><br/><br/>
-           <span class="certify"><i>Bearing <B>`+ rollno + `</B> Regd No. </i></span> <br/><br/>
-           <span class="certify"><i>has successfully completed the Graduation in</i></span> <br/><br/>
-           <span class="fs-30"><b>`+ branch + `</b> Branch</span> <br/><br/>
-           <br><div style="text-align: start !important;"><span class="certify" ><i>Graduation Year : </i></span>
-          <span class="fs-30"><b>`+ year + `</b></span></div>
-          <div style="text-align: start !important;"><span class="certify" ><i>Certificate ID : </i></span>
-            <a href="http://127.0.0.1:5000/?cert=`+ cert_id + `"><b>` + cert_id + `</b></a></div>
-    </div>
-    </div><br><a target='_blank' href='https://testnet.algoexplorer.io/tx/`+ cert_id +`'>Click Here</a> To View The Certificate in AlgoExplorer.<br><br>`
-        }
-
-        function render_danger_alert(message) {
-            return `<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show" role="alert">
-                        <i class="fa-solid fa-triangle-exclamation"></i> &nbsp;
-                        <div>
-                          `+ message + `
-                        </div><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>`
-        }
-    </script>
 </body>
 
 </html>
